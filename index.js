@@ -37,6 +37,7 @@ function handleEvent(event) {
     return Promise.resolve(null);
   }
 
+  console.log(event);
   userID = event.source.userID;
 
   // create a echoing text message
