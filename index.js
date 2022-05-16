@@ -37,12 +37,16 @@ function handleEvent(event) {
     return Promise.resolve(null);
   }
 
-  if (event.message.startsWith('set-reminder')) {
+  if (event.message.text.startsWith('!!')) {
     userID = event.source.userId;
+
+    const words = event.message.text.split('@');
+    const content = words[1];
+    const time = words[2];
 
     return client.replyMessage(event.replyToken, {
       type: 'text',
-      text: 'Roger! Leave it to me!',
+      text: `Roger! I'll remind you to "${content}" at ${time}`,
     });
   }
 
