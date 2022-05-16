@@ -42,9 +42,12 @@ function handleEvent(event) {
     const hours = words[1];
     const content = words[2];
 
+    // reply message
+    let message = {};
+
     if (hours != undefined && content != undefined) {
       // reply message
-      const message = {
+      message = {
         type: 'text',
         text: `Roger! I'll remind you to "${content}" in ${hours} hours`,
       };
@@ -58,7 +61,7 @@ function handleEvent(event) {
       sendReminder(userID, content);
     }, ms);
   } else {
-    const message = {
+    message = {
       type: 'text',
       text: `I don't understand, please use this format !!@hours@what-to-remind e.g. !!@2@do the laundry  !!@0.5@call mom`,
     };
