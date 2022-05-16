@@ -34,9 +34,15 @@ function handleEvent(event) {
   }
 
   // reply message default to error
+  const badReply = `I don't understand, please use this format !!@{time-in-hours}@{what-to-remind}
+  For examples:
+  Do the laundry in 2 hours => !!@2@do the laundry
+  Call mom in half an hour => !!@0.5@call mom
+  `;
+
   let message = {
     type: 'text',
-    text: `I don't understand, please use this format !!@hours@what-to-remind e.g. !!@2@do the laundry  !!@0.5@call mom`,
+    text: badReply,
   };
 
   if (event.message.text.startsWith('!!')) {
@@ -66,7 +72,7 @@ function handleEvent(event) {
       console.log('Setting up the reminder');
       // set a reminder in x hours
       // covert hour to ms
-      const ms = Number(hours) * 60 * 1000;
+      const ms = Number(hours) * 60 * 60 * 1000;
 
       setTimeout(() => {
         sendReminder(userID, content);
