@@ -30,11 +30,7 @@ app.post('/webhook', function (req, res) {
       messages: [
         {
           type: 'text',
-          text: 'Hello, user',
-        },
-        {
-          type: 'text',
-          text: 'May I help you?',
+          text: req.body.events[0].message.text,
         },
       ],
     });
