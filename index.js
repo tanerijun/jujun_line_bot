@@ -52,7 +52,7 @@ function handleEvent(event) {
 
     // set a reminder in x hours
     // covert hour to ms
-    const ms = hours * 60 * 1000;
+    const ms = Number(hours) * 60 * 1000;
 
     setTimeout(() => {
       sendReminder(userID, content);
