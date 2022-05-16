@@ -27,6 +27,9 @@ app.post('/webhook', line.middleware(config), (req, res) => {
     });
 });
 
+// targetID to push message
+const userID = null;
+
 // event handler
 function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
@@ -34,11 +37,16 @@ function handleEvent(event) {
     return Promise.resolve(null);
   }
 
+  userID = event.source.userID;
+
   // create a echoing text message
   const echo = { type: 'text', text: event.message.text };
 
   // use reply API
-  return client.replyMessage(event.replyToken, echo);
+  return client.replyMessage(event.replyToken, [
+    echo,
+    { type: 'text', text: `Your userID is ${userID}` },
+  ]);
 }
 
 // listen on port
