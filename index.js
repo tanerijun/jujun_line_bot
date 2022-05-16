@@ -13,11 +13,10 @@ const config = {
 const client = new line.Client(config);
 
 // create Express app
-// about Express itself: https://expressjs.com/
 const app = express();
 
 // register a webhook handler with middleware
-// about the middleware, please refer to doc
+// about the middleware, please refer to the doc
 app.post('/webhook', line.middleware(config), (req, res) => {
   Promise.all(req.body.events.map(handleEvent))
     .then((result) => res.json(result))
@@ -27,9 +26,6 @@ app.post('/webhook', line.middleware(config), (req, res) => {
     });
 });
 
-// targetID to push message
-let userID = null;
-
 // event handler
 function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
@@ -37,47 +33,44 @@ function handleEvent(event) {
     return Promise.resolve(null);
   }
 
-  let message = {};
-
   if (event.message.text.startsWith('!!')) {
-    userID = event.source.userId;
+    // targetID to push message to
+    const userID = event.source.userId;
 
+    // clean data
     const words = event.message.text.split('@');
-    const time = words[1];
+    const hours = words[1];
     const content = words[2];
 
-    if (time != undefined && content != undefined) {
-      message = {
+    if (hours != undefined && content != undefined) {
+      // reply message
+      const message = {
         type: 'text',
-        text: `Roger! I'll remind you to "${content}" at ${time}`,
+        text: `Roger! I'll remind you to "${content}" in ${hours} hours`,
       };
     }
 
+    // set a reminder in x hours
+    // covert hour to ms
+    const ms = hours * 60 * 1000;
+
     setTimeout(() => {
-      sendReminder(userID, time, content);
-    }, 10000);
+      sendReminder(userID, content);
+    }, ms);
   } else {
-    message = {
+    const message = {
       type: 'text',
-      text: `I don't understand, please use this format !!@time@what-to-remind`,
+      text: `I don't understand, please use this format !!@hours@what-to-remind e.g. !!@2@do the laundry  !!@0.5@call mom`,
     };
   }
 
   return client.replyMessage(event.replyToken, message);
-  // create a echoing text message
-  // const echo = { type: 'text', text: event.message.text };
-
-  // use reply API
-  // return client.replyMessage(event.replyToken, [
-  //   echo,
-  //   { type: 'text', text: `Your userID is ${userID}` },
-  // ]);
 }
 
-function sendReminder(userID, time, content) {
+function sendReminder(userID, content) {
   client.pushMessage(userID, {
     type: 'text',
-    text: `time=${time}, content=${content}`,
+    text: content,
   });
 }
 
