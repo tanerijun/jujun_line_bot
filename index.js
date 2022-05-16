@@ -51,7 +51,7 @@ function handleEvent(event) {
       text: `Roger! I'll remind you to "${content}" at ${time}`,
     };
 
-    setTimeout(sendReminder(userID, time, content), 5000);
+    // setTimeout(sendReminder(userID, time, content), 5000);
   } else {
     message = {
       type: 'text',
