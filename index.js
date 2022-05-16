@@ -50,6 +50,8 @@ function handleEvent(event) {
       type: 'text',
       text: `Roger! I'll remind you to "${content}" at ${time}`,
     };
+
+    setTimeout(sendReminder(userID, time, content), 5000);
   } else {
     message = {
       type: 'text',
@@ -57,7 +59,6 @@ function handleEvent(event) {
     };
   }
 
-  client.pushMessage(userID, { type: 'text', text: 'This come through push' });
   return client.replyMessage(event.replyToken, message);
   // create a echoing text message
   // const echo = { type: 'text', text: event.message.text };
@@ -67,6 +68,13 @@ function handleEvent(event) {
   //   echo,
   //   { type: 'text', text: `Your userID is ${userID}` },
   // ]);
+}
+
+function sendReminder(userID, time, content) {
+  client.pushMessage(userID, {
+    type: 'text',
+    text: `time=${time}, content=${content}`,
+  });
 }
 
 // listen on port
