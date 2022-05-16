@@ -37,19 +37,28 @@ function handleEvent(event) {
     return Promise.resolve(null);
   }
 
+  let message = {};
+
   if (event.message.text.startsWith('!!')) {
     userID = event.source.userId;
 
     const words = event.message.text.split('@');
-    const content = words[1];
-    const time = words[2];
+    const time = words[1];
+    const content = words[2];
 
-    return client.replyMessage(event.replyToken, {
+    message = {
       type: 'text',
       text: `Roger! I'll remind you to "${content}" at ${time}`,
-    });
+    };
+  } else {
+    message = {
+      type: 'text',
+      text: `I don't understand, please use this format !!@time@what-to-remind`,
+    };
   }
 
+  client.pushMessage(userID, { type: 'text', text: 'This come through push' });
+  return client.replyMessage(event.replyToken, message);
   // create a echoing text message
   // const echo = { type: 'text', text: event.message.text };
 
