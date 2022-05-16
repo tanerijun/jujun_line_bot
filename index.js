@@ -46,12 +46,14 @@ function handleEvent(event) {
     const time = words[1];
     const content = words[2];
 
-    message = {
-      type: 'text',
-      text: `Roger! I'll remind you to "${content}" at ${time}`,
-    };
+    if (time && content) {
+      message = {
+        type: 'text',
+        text: `Roger! I'll remind you to "${content}" at ${time}`,
+      };
+    }
 
-    // setTimeout(sendReminder(userID, time, content), 5000);
+    setTimeout(sendReminder(userID, time, content), 10000);
   } else {
     message = {
       type: 'text',
