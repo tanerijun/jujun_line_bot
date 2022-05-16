@@ -33,17 +33,23 @@ function handleEvent(event) {
     return Promise.resolve(null);
   }
 
+  // reply message
+  let message = {};
+
   if (event.message.text.startsWith('!!')) {
+    console.log('Valid request received...');
+
     // targetID to push message to
     const userID = event.source.userId;
+    console.log(`user: ${userID}`);
 
     // clean data
     const words = event.message.text.split('@');
     const hours = words[1];
     const content = words[2];
-
-    // reply message
-    let message = {};
+    console.log(
+      `Following data received: hours = ${hours}, content = ${content}`
+    );
 
     if (hours != undefined && content != undefined) {
       // reply message
@@ -51,8 +57,13 @@ function handleEvent(event) {
         type: 'text',
         text: `Roger! I'll remind you to "${content}" in ${hours} hours`,
       };
+
+      console.log('Passed all tests...');
+    } else {
+      console.log('Invalid data format, rejected!');
     }
 
+    console.log('Setting up the reminder');
     // set a reminder in x hours
     // covert hour to ms
     const ms = Number(hours) * 60 * 1000;
@@ -60,11 +71,14 @@ function handleEvent(event) {
     setTimeout(() => {
       sendReminder(userID, content);
     }, ms);
+    console.log('Finished successfully!');
   } else {
     message = {
       type: 'text',
       text: `I don't understand, please use this format !!@hours@what-to-remind e.g. !!@2@do the laundry  !!@0.5@call mom`,
     };
+
+    console.log("Received data doesn't start with !!, data rejected!");
   }
 
   return client.replyMessage(event.replyToken, message);
