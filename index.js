@@ -28,7 +28,7 @@ app.post('/webhook', line.middleware(config), (req, res) => {
 });
 
 // targetID to push message
-const userID = null;
+let userID = null;
 
 // event handler
 function handleEvent(event) {
