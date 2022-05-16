@@ -37,17 +37,23 @@ function handleEvent(event) {
     return Promise.resolve(null);
   }
 
-  console.log(event);
-  userID = event.source.userId;
+  if (event.message.startsWith('set-reminder')) {
+    userID = event.source.userId;
+
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: 'Roger! Leave it to me!',
+    });
+  }
 
   // create a echoing text message
-  const echo = { type: 'text', text: event.message.text };
+  // const echo = { type: 'text', text: event.message.text };
 
   // use reply API
-  return client.replyMessage(event.replyToken, [
-    echo,
-    { type: 'text', text: `Your userID is ${userID}` },
-  ]);
+  // return client.replyMessage(event.replyToken, [
+  //   echo,
+  //   { type: 'text', text: `Your userID is ${userID}` },
+  // ]);
 }
 
 // listen on port
