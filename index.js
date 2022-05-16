@@ -38,7 +38,7 @@ function handleEvent(event) {
   }
 
   console.log(event);
-  userID = event.source.userID;
+  userID = event.source.userId;
 
   // create a echoing text message
   const echo = { type: 'text', text: event.message.text };
