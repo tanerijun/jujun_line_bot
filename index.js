@@ -15,6 +15,11 @@ const client = new line.Client(config);
 // create Express app
 const app = express();
 
+// for better site health check
+app.get('/', (req, res) => {
+  res.sendStatus(200);
+});
+
 // register a webhook handler with middleware
 // about the middleware, please refer to the doc
 app.post('/webhook', line.middleware(config), (req, res) => {
@@ -34,6 +39,7 @@ function handleEvent(event) {
   }
 
   // reply message default to error
+  // when the timer is set successfully, the message will be changed
   const badReply = `I don't understand, please use this format !!@{time-in-hours}@{what-to-remind}
   For examples:
   Do the laundry in 2 hours => !!@2@do the laundry
@@ -45,20 +51,15 @@ function handleEvent(event) {
     text: badReply,
   };
 
+  // ignore all messages that doesn't start with this string
   if (event.message.text.startsWith('!!')) {
-    console.log('Valid request received...');
-
     // targetID to push message to
     const userID = event.source.userId;
-    console.log(`user: ${userID}`);
 
-    // clean data
+    // process data
     const words = event.message.text.split('@');
     const hours = words[1];
     const content = words[2];
-    console.log(
-      `Following data received: hours = ${hours}, content = ${content}`
-    );
 
     if (hours != undefined && content != undefined) {
       // update reply message
@@ -67,9 +68,6 @@ function handleEvent(event) {
         text: `Roger! I'll remind you to "${content}" in ${hours} hours`,
       };
 
-      console.log('Passed all tests...');
-
-      console.log('Setting up the reminder');
       // set a reminder in x hours
       // covert hour to ms
       const ms = Number(hours) * 60 * 60 * 1000;
@@ -77,17 +75,13 @@ function handleEvent(event) {
       setTimeout(() => {
         sendReminder(userID, content);
       }, ms);
-      console.log('Finished successfully!');
-    } else {
-      console.log('Invalid data format, rejected!');
     }
-  } else {
-    console.log("Received data doesn't start with !!, data rejected!");
   }
 
   return client.replyMessage(event.replyToken, message);
 }
 
+// sending reminder with pushMessage method of the client
 function sendReminder(userID, content) {
   client.pushMessage(userID, {
     type: 'text',
